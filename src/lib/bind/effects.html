@@ -75,11 +75,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _marshalArgs: function(model, effect, path, value) {
       var values = [];
       var args = effect.args;
-      for (var i=0, l=args.length; i<l; i++) {
-        var arg = args[i];
-        var name = arg.name;
-        var v = arg.structured ?
-          Polymer.Base.getPathValue(name, model) : model[name];
+      for (var i=0, arg, name, v, l=args.length; i<l; i++) {
+        arg = args[i];
+        name = arg.name;
+        if (arg.literal) {
+          v = arg.value;
+        } else if (arg.structured) {
+          v = Polymer.Base.getPathValue(name, model);
+        } else {
+          v = model[name];
+        }
         if (v === undefined) {
           return;
         }
